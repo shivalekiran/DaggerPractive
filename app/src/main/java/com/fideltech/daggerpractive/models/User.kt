@@ -1,4 +1,4 @@
-package com.fideltech.daggerpractive.ui.auth
+package com.fideltech.daggerpractive.models
 
 data class User(
     val address: Address,

@@ -1,12 +1,12 @@
 package com.fideltech.daggerpractive.network.auth
 
-import com.fideltech.daggerpractive.ui.auth.User
-import okhttp3.ResponseBody
-import retrofit2.Call
+import com.fideltech.daggerpractive.models.User
+import io.reactivex.Flowable
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface AuthAPI {
 
-    @GET("/users")
-    fun getUsers(): Call<List<User>>
+    @GET("/users/{id}")
+    fun getUsers(@Path("id") id: Int): Flowable<User>
 }
