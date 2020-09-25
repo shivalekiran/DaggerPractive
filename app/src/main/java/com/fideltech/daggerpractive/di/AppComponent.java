@@ -3,6 +3,7 @@ package com.fideltech.daggerpractive.di;
 import android.app.Application;
 
 import com.fideltech.daggerpractive.BaseApplication;
+import com.fideltech.daggerpractive.SessionManager;
 import com.fideltech.daggerpractive.ui.auth.AuthViewModel;
 
 import javax.inject.Singleton;
@@ -22,6 +23,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
         }
 )
 public interface AppComponent extends AndroidInjector<BaseApplication> {
+    SessionManager sessionManager();
 
     @Component.Builder
     interface Builder {
@@ -30,4 +32,6 @@ public interface AppComponent extends AndroidInjector<BaseApplication> {
 
         AppComponent build();
     }
+
+    ;
 }

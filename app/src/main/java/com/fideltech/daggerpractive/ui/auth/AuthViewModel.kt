@@ -1,9 +1,11 @@
 package com.fideltech.daggerpractive.ui.auth
 
+import android.media.session.MediaSessionManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.fideltech.daggerpractive.SessionManager
 import com.fideltech.daggerpractive.models.User
 import com.fideltech.daggerpractive.network.auth.AuthAPI
 import com.fideltech.daggerpractive.ui.AuthResource
@@ -16,21 +18,18 @@ import org.reactivestreams.Subscriber
 import java.util.*
 import javax.inject.Inject
 
-class AuthViewModel @Inject constructor(val authAPI: AuthAPI) : ViewModel() {
+class AuthViewModel @Inject constructor(val authAPI: AuthAPI, val sessionManager: SessionManager) :
+    ViewModel() {
 
-    val authUser: MediatorLiveData<AuthResource<User?>> = MediatorLiveData()
 
-    fun observeUser(): LiveData<AuthResource<User?>> {
-        return authUser
+    fun observeAuthUser(): LiveData<AuthResource<User?>> {
+        return sessionManager.getAuthUser()
     }
 
-    fun authenticateUser(id: Int) {
-        @Suppress("UNCHECKED_CAST")
-        authUser.value = AuthResource.loading(null) as AuthResource<User?>
-
-        //getting flowabl dat from api and converting it to Flowable
-        //then passing this flowable to @LiveDataReactiveStreams to covert it to LiveData
-        val source = LiveDataReactiveStreams.fromPublisher(
+    //getting flowabl dat from api and converting it to Flowable
+    //then passing this flowable to @LiveDataReactiveStreams to covert it to LiveData
+    fun queryUserId(id: Int): LiveData<AuthResource<User?>> {
+        return LiveDataReactiveStreams.fromPublisher(
             authAPI.getUsers(id)
                 //if error then returning user with -1 id
                 .onErrorReturn { User(-1) }
@@ -45,9 +44,9 @@ class AuthViewModel @Inject constructor(val authAPI: AuthAPI) : ViewModel() {
                 })
                 .subscribeOn(Schedulers.io())
         )
-        authUser.addSource(source) { user ->
-            authUser.value = user
-            authUser.removeSource(source)
-        }
+    }
+
+    fun authenticateUser(id: Int) {
+        sessionManager.authenticateWithId(queryUserId(id))
     }
 }
