@@ -1,5 +1,6 @@
 package com.fideltech.daggerpractive.ui.auth
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
 import com.fideltech.daggerpractive.R
 import com.fideltech.daggerpractive.ui.AuthResource
+import com.fideltech.daggerpractive.ui.main.MainActivity
 import com.fideltech.daggerpractive.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -50,6 +52,7 @@ class AuthActivity : DaggerAppCompatActivity() {
                 when (authUser.status) {
                     AuthResource.AuthStatus.AUTHENTICATED -> {
                         println("User is Authenticated")
+                        onLoginSuccess()
                     }
                     AuthResource.AuthStatus.ERROR -> Toast.makeText(
                         application,
@@ -61,6 +64,12 @@ class AuthActivity : DaggerAppCompatActivity() {
                 }
             }
         })
+    }
+
+    fun onLoginSuccess() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun loginUser() {
