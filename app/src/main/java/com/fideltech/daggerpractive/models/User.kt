@@ -1,11 +1,11 @@
 package com.fideltech.daggerpractive.models
 
 data class User(
-    val address: Address,
-    val email: String,
     val id: Int,
-    val name: String,
-    val username: String
+    val address: Address? = null,
+    val email: String = "",
+    val name: String = "",
+    val username: String = ""
 )
 
 

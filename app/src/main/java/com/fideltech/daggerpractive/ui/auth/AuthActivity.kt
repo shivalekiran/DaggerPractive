@@ -35,7 +35,7 @@ class AuthActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
         viewModel = ViewModelProvider(this, providerFactory).get(AuthViewModel::class.java)
-        login_logo.setOnClickListener {
+        login_button.setOnClickListener {
             loginUser()
         }
         subscribeUserObserve()

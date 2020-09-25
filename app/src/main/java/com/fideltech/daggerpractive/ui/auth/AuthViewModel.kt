@@ -18,36 +18,36 @@ import javax.inject.Inject
 
 class AuthViewModel @Inject constructor(val authAPI: AuthAPI) : ViewModel() {
 
-    val authUser: MediatorLiveData<AuthResource<User>> = MediatorLiveData()
+    val authUser: MediatorLiveData<AuthResource<User?>> = MediatorLiveData()
 
-    fun observeUser(): LiveData<AuthResource<User>> {
+    fun observeUser(): LiveData<AuthResource<User?>> {
         return authUser
     }
 
     fun authenticateUser(id: Int) {
         @Suppress("UNCHECKED_CAST")
-        authUser.value = AuthResource.loading(data = null) as AuthResource<User>
+        authUser.value = AuthResource.loading(null) as AuthResource<User?>
+
+        //getting flowabl dat from api and converting it to Flowable
+        //then passing this flowable to @LiveDataReactiveStreams to covert it to LiveData
         val source = LiveDataReactiveStreams.fromPublisher(
             authAPI.getUsers(id)
-                .onErrorReturn (object : Function<Throwable, User> {
-                    override fun apply(t: Throwable): User {
-                        return User()
+                //if error then returning user with -1 id
+                .onErrorReturn { User(-1) }
+                //checking here if error then returning error if not then returning  authenticate
+                .map(object : Function<User, AuthResource<User?>> {
+                    override fun apply(t: User): AuthResource<User?> {
+                        if (t.id == -1) {
+                            return AuthResource.error("Enter Correct id or check your network.", t)
+                        }
+                        return AuthResource.authenticated(t)
                     }
                 })
                 .subscribeOn(Schedulers.io())
         )
-        authUser.addSource(source, androidx.lifecycle.Observer {
-            authUser.value = it
+        authUser.addSource(source) { user ->
+            authUser.value = user
             authUser.removeSource(source)
-        })
-    }
-
-    init {
-        val users = authAPI.getUsers(1)
-            .toObservable()
-            .subscribeOn(io())
-            .subscribe({ user ->
-                println("User details - $user")
-            })
+        }
     }
 }
