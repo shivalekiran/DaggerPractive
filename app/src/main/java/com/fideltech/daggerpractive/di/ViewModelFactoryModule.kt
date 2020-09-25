@@ -7,6 +7,9 @@ import com.fideltech.daggerpractive.viewmodels.ViewModelProviderFactory
 import dagger.Binds
 import dagger.Module
 
+/**
+ * Provide Factory for view models of activity
+ */
 @Module
 abstract class ViewModelFactoryModule {
     @Binds
