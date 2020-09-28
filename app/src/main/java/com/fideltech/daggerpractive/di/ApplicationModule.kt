@@ -8,12 +8,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.fideltech.daggerpractive.R
+import com.fideltech.daggerpractive.models.User
 import com.fideltech.daggerpractive.util.Constants
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -57,4 +59,13 @@ class ApplicationModule {
     fun provideAppLogoDrawable(application: Application): Drawable {
         return ContextCompat.getDrawable(application, R.drawable.logo)!!
     }
+
+    //same type object return
+    //dont delete after screen rotate
+//    @Singleton
+//    @Provides
+//    @Named("App_User")
+//    fun getUser():User{
+//        return User(-1)
+//    }
 }

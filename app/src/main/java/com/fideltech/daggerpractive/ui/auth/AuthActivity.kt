@@ -10,12 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
 import com.fideltech.daggerpractive.R
+import com.fideltech.daggerpractive.models.User
 import com.fideltech.daggerpractive.ui.AuthResource
 import com.fideltech.daggerpractive.ui.main.MainActivity
 import com.fideltech.daggerpractive.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_auth.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class AuthActivity : DaggerAppCompatActivity() {
 
@@ -33,6 +35,12 @@ class AuthActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var applicationName: String
 
+//    @Inject
+//    @Named("App_User")
+//    lateinit var App_User: User
+//    @Inject
+//    @Named("User_Auth")
+//    lateinit var User_Auth: User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
@@ -40,6 +48,8 @@ class AuthActivity : DaggerAppCompatActivity() {
         login_button.setOnClickListener {
             loginUser()
         }
+//        println("User_Auth = $User_Auth")
+//        println("App_User = $App_User")
         subscribeUserObserve()
         setLogo()
     }
