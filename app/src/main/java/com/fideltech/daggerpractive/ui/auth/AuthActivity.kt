@@ -60,7 +60,8 @@ class AuthActivity : DaggerAppCompatActivity() {
                         Toast.LENGTH_LONG
                     ).show()
                     AuthResource.AuthStatus.LOADING -> progress_bar.visibility = View.VISIBLE
-                    AuthResource.AuthStatus.NOT_AUTHENTICATED -> TODO()
+                    AuthResource.AuthStatus.NOT_AUTHENTICATED ->
+                        progress_bar.visibility = View.GONE
                 }
             }
         })
@@ -69,13 +70,17 @@ class AuthActivity : DaggerAppCompatActivity() {
     fun onLoginSuccess() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()
+        this.finish()
     }
 
     private fun loginUser() {
         if (!TextUtils.isEmpty(user_id_input.text.toString().trim())) {
             viewModel.authenticateUser(user_id_input.text.toString().toInt())
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 
     fun setLogo() {

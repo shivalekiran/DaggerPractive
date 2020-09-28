@@ -7,27 +7,32 @@ import com.fideltech.daggerpractive.ui.AuthResource
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 @Singleton
 class SessionManager @Inject constructor() {
 
-    private val cashedUser = MediatorLiveData<AuthResource<User?>>()
+    private val cachedUser = MediatorLiveData<AuthResource<User?>>()
 
     fun authenticateWithId(source: LiveData<AuthResource<User?>>) {
-        cashedUser.let {
+        cachedUser.let {
             it.value = AuthResource.loading(null) as AuthResource<User?>
-            cashedUser.addSource(source) { autUser ->
-                cashedUser.value = autUser
-                cashedUser.removeSource(source)
+            cachedUser.addSource(source) { autUser ->
+
+                cachedUser.value = autUser
+                cachedUser.removeSource(source)
+                if (autUser.status.equals(AuthResource.AuthStatus.ERROR)) {
+                    cachedUser.setValue(AuthResource.logout())
+                }
             }
         }
     }
 
     fun logOut() {
         println("Loging out user")
-        cashedUser.value = AuthResource.logout()
+        cachedUser.value = AuthResource.logout()
     }
 
     fun getAuthUser(): LiveData<AuthResource<User?>> {
-        return cashedUser
+        return cachedUser
     }
 }
